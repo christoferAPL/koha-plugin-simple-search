@@ -10,33 +10,29 @@ use base qw(Koha::Plugins::Base);
 use C4::Context;
 use C4::Auth;
 use C4::Search;
-use Koha::Patron;
+#use Koha::Patron;
 use Koha::DateUtils;
 use Koha::Libraries;
 use Koha::Patron::Categories;
-use Koha::Account;
-use Koha::Account::Lines;
-#use MARC::Record;
+#use Koha::Account;
+#use Koha::Account::Lines;
+##use MARC::Record;
 use MARC::Record::MiJ;
 use Cwd qw(abs_path);
 use Mojo::JSON qw(decode_json);;
 use URI::Escape qw(uri_unescape);
 use LWP::UserAgent;
 
-## Here we set our plugin version
-our $VERSION = "{VERSION}";
-our $MINIMUM_VERSION = "{MINIMUM_VERSION}";
-
 ## Here is our metadata, some keys are required, some are optional
 our $metadata = {
-    name            => 'Example SimpleSearch Plugin',
-    author          => 'Nick Clemens',
+    name            => 'App Search Plugin',
+    author          => 'Christofer Zorn',
     date_authored   => '2020-06-05',
-    date_updated    => "1900-01-01",
-    minimum_version => $MINIMUM_VERSION,
+    date_updated    => "2020-07-21",
+    minimum_version => '19.11',
     maximum_version => undef,
-    version         => $VERSION,
-    description     => 'This plugin implements a simple search api '
+    version         => 1.0,
+    description     => 'This plugin implements a simple search api for the mobile app. Forked from N.Clemens code.'
 };
 
 ## This is the minimum code required for a plugin's 'new' method
@@ -63,13 +59,7 @@ sub new {
 sub opac_head {
     my ( $self ) = @_;
 
-    return q|
-        <style>
-          body {
-            background-color: orange;
-          }
-        </style>
-    |;
+    return q||;
 }
 
 ## If your plugin needs to add some javascript in the OPAC, you'll want
@@ -79,9 +69,7 @@ sub opac_head {
 sub opac_js {
     my ( $self ) = @_;
 
-    return q|
-        <script>console.log("Thanks for testing the kitchen sink plugin!");</script>
-    |;
+    return q||;
 }
 
 
@@ -92,13 +80,7 @@ sub opac_js {
 sub intranet_head {
     my ( $self ) = @_;
 
-    return q|
-        <style>
-          body {
-            background-color: orange;
-          }
-        </style>
-    |;
+    return q||;
 }
 
 ## If your plugin needs to add some javascript in the staff intranet, you'll want
@@ -108,9 +90,7 @@ sub intranet_head {
 sub intranet_js {
     my ( $self ) = @_;
 
-    return q|
-        <script>console.log("Thanks for testing the kitchen sink plugin!");</script>
-    |;
+    return q||;
 }
 
 ## This is the 'upgrade' method. It will be triggered when a newer version of a
@@ -139,14 +119,15 @@ sub simple_search {
     my $searcher = Koha::SearchEngine::Search->new({ index => 'biblios'});
     my (undef, $results, $hits) = $searcher->simple_search_compat($query,$offset,$max_results);
 
-    my @return;
-    foreach my $result ( @$results ){
-        my $marc_record = C4::Search::new_record_from_zebra( 'biblioserver', $result);
-        push @return, $marc_record->to_mij;
-    }
+    return $results;
 
-    return \@return;
+    #my @return;
+    #foreach my $result ( @$results ){
+    #    my $marc_record = C4::Search::new_record_from_zebra( 'biblioserver', $result);
+    #    push @return, $marc_record->to_mij;
+    #}
 
+    #return \@return;
 }
 
 ## API methods
